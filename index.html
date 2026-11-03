@@ -1,0 +1,1588 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <meta charset="utf-8">
+  <meta name="description" content="FreqGS: Frequency-Guided Gaussian Splatting for High-Fidelity Novel View Synthesis from Monocular Street Scenes">
+  <meta name="keywords" content="3D Gaussian splatting, urban street scene reconstruction, large-scale scene reconstruction, Autonomous driving">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FreqGS</title>
+
+  <!-- Open Graph meta tags for social media previews -->
+  <meta property="og:title" content="FreqGS: Frequency-Guided Gaussian Splatting for High-Fidelity Novel View Synthesis from Monocular Street Scenes">
+  <meta property="og:description" content="Short description">
+  <meta property="og:image" content="./static/images/teaser.jpg">
+  <meta property="og:image:alt" content="Example of FreqGS reconstruction">
+  <meta property="og:url" content="https://felizang.github.io/FreqGS/">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="FreqGS">
+
+  <!-- Twitter Card meta tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="FreqGS: Frequency-Guided Gaussian Splatting for High-Fidelity Novel View Synthesis from Monocular Street Scenes">
+  <meta name="twitter:description" content="Short description">
+  <meta name="twitter:image" content="./static/images/teaser.jpg">
+  <meta name="twitter:image:alt" content="Example of FreqGS reconstruction">
+
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+
+
+
+
+
+<body>
+
+<!-- Title/Authors/Icons. -->
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <!-- Title. -->
+          <h1 class="title is-1 publication-title">
+            <img src="" alt="" style="height: 1.5em; vertical-align: middle;">
+            <strong><span class="dnerf" style="font-size: 60px;">FreqGS:</span></strong> <br>
+            Frequency-Guided Gaussian Splatting for <br>
+            High-Fidelity Novel View Synthesis from <br>
+            Monocular Street Scenes
+          </h1>
+          <!--/ Title. -->
+
+          <!-- Authors. -->
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://acseker.github.io/acseker/">Ahmet Cagatay Seker</a><sup>1,2</sup>,
+            </span>&nbsp;&nbsp;&nbsp;
+            <span class="author-block">
+              <a href="https://sites.google.com/view/asckist">Sang Chul Ahn</a><sup>1,2,&#9993;</sup>
+            </span>&nbsp;&nbsp;&nbsp;
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block-small"><small><sup>&#9993;</sup> Corresponding Author.</small></span>
+          </div>
+          <!--/ Authors. -->
+
+          <!-- Affiliations. -->
+          <div class="is-size-5 publication-authors">
+              <div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 2em; text-align: center;">
+                  <div class="is-size-5 publication-authors" style="min-width: 150px;">
+                      <span class="author-block"><sup>1</sup> University of Science and Technology,</span><br>
+                      <a href="https://www.ust.ac.kr/eng/">
+                      <img style="max-height: 50px; height: auto; width: auto; padding-top: 5px;"
+                           src="./static/assets/ust.svg"
+                           alt="UST Logo">
+                      </a>
+                  </div>
+
+                  <div class="is-size-5 publication-authors" style="min-width: 150px;">
+                    <span class="author-block"><sup>2</sup> Korea Institute of Science and Technology,</span><br>
+                    <a href="https://www.kist.re.kr/eng/index.do">
+                    <img style="max-height: 60px; height: auto; width: auto; padding-top: 5px;"
+                         src="./static/assets/kist.svg"
+                         alt="KIST Logo">
+                    </a>
+                 </div>
+              </div>
+          </div>
+          <!--/ Affiliations. -->
+
+          <!-- Icons. -->
+          <div class="column has-text-centered">
+            <div class="publication-links">
+
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                    <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper (Coming soon)</span>
+                </a>
+              </span>
+              <!--/ PDF Link. -->
+
+            </div>
+          </div>
+          <!--/ Icons. -->
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Title/Authors/Icons. -->
+
+
+
+
+
+<!-- Teaser. -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+
+      <div class="columns is-centered">
+        <div class="column is-full-width has-text-centered">
+          <div class="content" style="background: #f8f9fa; padding: 10px; border-left: 6px solid #ed321e; border-radius: 10px; margin: 0 auto;">
+            <p style="font-size: 1.1rem; color: #2c5aa0; margin: 0">
+              <span style="display: inline-block; color: #ed321e; padding: 5px 4px 5px 7px; border-radius: 5px; font-weight: bold; line-height: 1;">TL;DR:</span>
+              <strong><span class="dnerf" style="font-size: 20px;">FreqGS</span> improves monocular novel view synthesis by combining frequency-guided
+                 anchor initialization with error-voxel-based densification, producing sharper details and more complete street-scene reconstructions 
+                 while improving robustness under lateral viewpoint extrapolation.</strong>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <br>
+
+      <div class="content has-text-centered">
+        <img src="./static/images/teaser.jpg"
+             style="width: 100%; height: auto; margin-bottom: -10px; border-radius: 0px;"
+             alt="Sample Image."/>
+      </div>
+
+      <h2 class="subtitle has-text-centered">
+        <div class="content has-text-justified">
+          <strong><span class="dnerf" style="font-size: 24px;">FreqGS</span></strong> improves high-frequency detail reconstruction and produces more
+          consistent renderings at extrapolated viewpoints in forward-moving monocular street scenes. On held-out
+          views <strong>(top)</strong>, our method better preserves lane markings and subtle road details, yielding improved
+          regional metric performance. At extrapolated viewpoints <strong>(bottom)</strong>, it preserves more coherent lane
+          geometry and sharper road–sidewalk boundaries, whereas existing methods produce blurred, duplicated, or
+          distorted structures.
+        </div>
+      </h2>
+
+    </div>
+  </div>
+</section>
+<!--/ Teaser. -->
+
+
+
+
+
+<!-- Abstract. -->
+<section class="section hero is-light">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            3D Gaussian Splatting (3DGS) enables real-time novel view synthesis with high visual quality.
+            However, in forward-moving urban street scenes, existing methods often struggle to reconstruct fine
+            structures and high-frequency details because sparse SfM initialization and local densification heuristics
+            result in incomplete coverage and over-smoothed renderings. To address these limitations, we propose a
+            novel method that jointly leverages region-aware frequency-guided initialization and error-voxel-based
+            densification for high-fidelity monocular novel view synthesis. Our initialization performs
+            frequency-guided pixel sampling within partitioned regions, improving fine-detail representation and
+            coverage in low-texture areas. During training, our densification aggregates multi-view image-space color
+            and frequency discrepancies into 3D error voxels, guiding the selective insertion of new anchors in
+            persistently under-reconstructed regions. We further introduce a frequency-derived direction map as an
+            auxiliary constraint to encourage structural consistency. Experiments on publicly available street-scene
+            datasets demonstrate that our method outperforms existing 3DGS-based approaches, achieving superior
+            rendering fidelity and fine-detail preservation on held-out views while generating more structurally
+            consistent and visually accurate renderings under viewpoint extrapolation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Abstract. -->
+
+
+
+
+
+<!-- Method. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom: 0;">
+      <div class="column is-full">
+        <h2 class="title is-3" style="font-weight: bold; margin-bottom: 20px;">Method</h2>
+        <div class="content has-text-justified">
+          <div class="content has-text-centered">
+            <img src="./static/images/pipeline.jpg"
+                 style="width: 100%; max-width: 100%; height: auto; border-radius: 0px; margin-bottom: -15px;"
+                 alt=""/>
+          </div>
+          <p>
+            <strong><span class="dnerf" style="font-size: 20px;">FreqGS</span></strong> takes a forward-moving monocular image sequence as input and reconstructs the scene using
+            adaptive neural Gaussian anchors. It first initializes anchors with semantic, depth, and
+            frequency guidance, then optimizes them using color, depth, and frequency-aware losses. During training,
+            image-space errors are back-projected into a 3D error volume to insert new anchors in poorly
+            reconstructed regions, improving fine-detail reconstruction.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Method. -->
+
+
+
+
+
+<!-- Novel View Synthesis. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom: 20px;">
+      <div class="column is-full">
+
+        <h2 class="title is-3" style="font-weight: bold;">Novel View Synthesis</h2>
+        <div class="content has-text-justified">
+          <p>
+            Novel view synthesis results across diverse scenes. These videos present renderings along smoothly varying
+            camera trajectories, demonstrating high visual quality, consistent scene geometry, and stable appearance
+            across novel viewpoints.
+          </p>
+        </div>
+
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-full">
+            <div id="results-carousel" class="carousel results-carousel">
+
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_036.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_126.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_204.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_232.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_314.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_scene_053.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video autoplay controls muted loop playsinline height="100%">
+                  <source src="./static/videos/nvs_ours_scene_078.mp4" type="video/mp4">
+                </video>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Novel View Synthesis. -->
+
+
+
+
+
+<!-- Comparisons with Previous Methods. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom: 0;">
+      <div class="column is-full">
+        <h2 class="title is-3">Comparisons with Previous Methods</h2>
+        <div class="content has-text-justified">
+          <p>
+            Qualitative comparison on held-out views. Compared with previous approaches, our method better
+            preserves fine road structures and high-frequency details, producing sharper renderings with
+            reduced blur artifacts.
+          </p>
+        </div>
+
+        <h2 class="title is-5">Scene 1</h2>
+        <div class="columns is-centered">
+
+          <!-- Row 1. -->
+          <div class="column">
+            <div class="content">
+              <div class="columns is-centered">
+                <div class="column is-full-width">
+
+                  <div id="example1" class="bal-container-small" style="aspect-ratio: 1059 / 553; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00022_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00022_3dgs.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          3DGS
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+
+                  <div id="example2" class="bal-container-small" style="aspect-ratio: 1059 / 553; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00022_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00022_gaussianpro.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          GaussianPro
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+
+                  <div id="example3" class="bal-container-small" style="aspect-ratio: 1059 / 553; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00022_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00022_gs_lpm.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          GS-LPM
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/ Row 1. -->
+
+          <!-- Row 2. -->
+          <div class="column">
+            <div class="columns is-centered">
+              <div class="column content">
+
+                <div id="example4" class="bal-container-small" style="aspect-ratio: 1059 / 553; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00022_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00022_scaffold_gsD.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Scaffold-GS*
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+                <div id="example5" class="bal-container-small" style="aspect-ratio: 1059 / 553; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00022_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00022_pixel_gs.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Pixel-GS
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+
+                <div id="example6" class="bal-container-small" style="aspect-ratio: 1059 / 553; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00022_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00022_gt.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Ground Truth
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!--/ Row 2. -->
+        </div>
+
+
+
+
+
+        <br>
+        <h2 class="title is-5">Scene 2</h2>
+        <div class="columns is-centered">
+
+          <!-- Row 1. -->
+          <div class="column">
+            <div class="content">
+              <div class="columns is-centered">
+                <div class="column is-full-width">
+
+                  <div id="example7" class="bal-container-small" style="aspect-ratio: 1056 / 552; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00021_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00021_3dgs.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          3DGS
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+
+                  <div id="example8" class="bal-container-small" style="aspect-ratio: 1056 / 552; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00021_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00021_gaussianpro.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          GaussianPro
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+
+                  <div id="example9" class="bal-container-small" style="aspect-ratio: 1056 / 552; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00021_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00021_gs_lpm.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          GS-LPM
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/ Row 1. -->
+
+          <!-- Row 2. -->
+          <div class="column">
+            <div class="columns is-centered">
+              <div class="column content">
+
+                <div id="example10" class="bal-container-small" style="aspect-ratio: 1056 / 552; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00021_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00021_scaffold_gsD.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Scaffold-GS*
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+                <div id="example11" class="bal-container-small" style="aspect-ratio: 1056 / 552; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00021_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00021_pixel_gs.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Pixel-GS
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+
+                <div id="example12" class="bal-container-small" style="aspect-ratio: 1056 / 552; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00021_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00021_gt.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Ground Truth
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!--/ Row 2. -->
+        </div>
+
+
+
+
+
+        <br>
+        <h2 class="title is-5">Scene 3</h2>
+        <div class="columns is-centered">
+
+          <!-- Row 1. -->
+          <div class="column">
+            <div class="content">
+              <div class="columns is-centered">
+                <div class="column is-full-width">
+
+                  <div id="example13" class="bal-container-small" style="aspect-ratio: 984 / 646; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00001_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00001_3dgs.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          3DGS
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+
+                  <div id="example14" class="bal-container-small" style="aspect-ratio: 984 / 646; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00001_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00001_gaussianpro.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          GaussianPro
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+
+                  <div id="example15" class="bal-container-small" style="aspect-ratio: 984 / 646; margin-bottom: 1.5rem;">
+                    <div class="bal-after">
+                      <img src="./static/images/00001_ours.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
+
+                    <div class="bal-before">
+                      <div class="bal-before-inset">
+                      <img src="./static/images/00001_gs_lpm.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          GS-LPM
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <!--/ Row 1. -->
+
+          <!-- Row 2. -->
+          <div class="column">
+            <div class="columns is-centered">
+              <div class="column content">
+
+                <div id="example16" class="bal-container-small" style="aspect-ratio: 984 / 646; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00001_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00001_scaffold_gsD.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Scaffold-GS*
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+                <div id="example17" class="bal-container-small" style="aspect-ratio: 984 / 646; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00001_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00001_pixel_gs.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Pixel-GS
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+
+                <div id="example18" class="bal-container-small" style="aspect-ratio: 984 / 646; margin-bottom: 1.5rem;">
+                  <div class="bal-after">
+                    <img src="./static/images/00001_ours.png">
+                    <div class="bal-afterPosition afterLabel">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before">
+                    <div class="bal-before-inset">
+                    <img src="./static/images/00001_gt.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        Ground Truth
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <!--/ Row 2. -->
+        </div>
+
+
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Comparisons with Previous Methods. -->
+
+
+
+
+
+<!-- Video Comparisons with Previous Methods. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-full">
+      <h2 class="title is-3">Video Comparisons with Previous Methods</h2>
+        <div class="content has-text-justified">
+          <p>
+            These videos compare novel-view renderings produced by our method and previous approaches along smoothly
+            varying camera trajectories. Our method better preserves fine road structures and high-frequency details
+            while maintaining more consistent geometry and appearance across viewpoints. Please refresh the page if
+            you notice any synchronization or alignment issues between the video pairs.
+          </p>
+        </div>
+        <br>
+
+        <h2 class="title is-5">Scene 1</h2>
+<div class="video-grid">
+<div class="video-cell">
+      <div id="videoCompare5" class="bal-container-small video-compare-container">
+
+        <!-- Right/full video -->
+        <div class="bal-after">
+          <video muted loop playsinline>
+            <source src="static/videos/comp_video_362_ours.mp4" type="video/mp4">
+          </video>
+          <div class="bal-afterPosition videoAfterLabel">Ours</div>
+        </div>
+
+        <!-- Left/clipped video -->
+        <div class="bal-before">
+          <div class="bal-before-inset">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_362_3dgs.mp4" type="video/mp4">
+            </video>
+            <div class="bal-beforePosition videoBeforeLabel">3DGS</div>
+          </div>
+        </div>
+
+        <div class="bal-handle">
+          <span class="handle-left-arrow"></span>
+          <span class="handle-right-arrow"></span>
+        </div>
+
+      </div>
+      <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare5')">
+        Play / Pause
+      </button>
+</div>
+
+
+
+<div class="video-cell">
+      <div id="videoCompare4" class="bal-container-small video-compare-container">
+
+        <!-- Right/full video -->
+        <div class="bal-after">
+          <video muted loop playsinline>
+            <source src="static/videos/comp_video_362_ours.mp4" type="video/mp4">
+          </video>
+          <div class="bal-afterPosition videoAfterLabel">Ours</div>
+        </div>
+
+        <!-- Left/clipped video -->
+        <div class="bal-before">
+          <div class="bal-before-inset">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_362_scaffold_gsD.mp4" type="video/mp4">
+            </video>
+            <div class="bal-beforePosition videoBeforeLabel">Scaffold-GS*</div>
+          </div>
+        </div>
+
+        <div class="bal-handle">
+          <span class="handle-left-arrow"></span>
+          <span class="handle-right-arrow"></span>
+        </div>
+
+      </div>
+      <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare4')">
+        Play / Pause
+      </button>
+</div>
+
+
+
+<div class="video-cell">
+      <div id="videoCompare3" class="bal-container-small video-compare-container">
+
+        <!-- Right/full video -->
+        <div class="bal-after">
+          <video muted loop playsinline>
+            <source src="static/videos/comp_video_362_ours.mp4" type="video/mp4">
+          </video>
+          <div class="bal-afterPosition videoAfterLabel">Ours</div>
+        </div>
+
+        <!-- Left/clipped video -->
+        <div class="bal-before">
+          <div class="bal-before-inset">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_362_gaussianpro.mp4" type="video/mp4">
+            </video>
+            <div class="bal-beforePosition videoBeforeLabel">GaussianPro</div>
+          </div>
+        </div>
+
+        <div class="bal-handle">
+          <span class="handle-left-arrow"></span>
+          <span class="handle-right-arrow"></span>
+        </div>
+
+      </div>
+      <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare3')">
+        Play / Pause
+      </button>
+</div>
+
+
+
+<div class="video-cell">
+        <div id="videoCompare2" class="bal-container-small video-compare-container">
+
+          <!-- Right/full video -->
+          <div class="bal-after">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_362_ours.mp4" type="video/mp4">
+            </video>
+            <div class="bal-afterPosition videoAfterLabel">Ours</div>
+          </div>
+
+          <!-- Left/clipped video -->
+          <div class="bal-before">
+            <div class="bal-before-inset">
+              <video muted loop playsinline>
+                <source src="static/videos/comp_video_362_pixelgs.mp4" type="video/mp4">
+              </video>
+              <div class="bal-beforePosition videoBeforeLabel">Pixel-GS</div>
+            </div>
+          </div>
+
+          <div class="bal-handle">
+            <span class="handle-left-arrow"></span>
+            <span class="handle-right-arrow"></span>
+          </div>
+
+        </div>
+        <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare2')">
+          Play / Pause
+        </button>
+</div>
+
+
+
+<div class="video-cell">
+        <div id="videoCompare1" class="bal-container-small video-compare-container">
+
+          <!-- Right/full video -->
+          <div class="bal-after">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_362_ours.mp4" type="video/mp4">
+            </video>
+            <div class="bal-afterPosition videoAfterLabel">Ours</div>
+          </div>
+
+          <!-- Left/clipped video -->
+          <div class="bal-before">
+            <div class="bal-before-inset">
+              <video muted loop playsinline>
+                <source src="static/videos/comp_video_362_gs-lpm.mp4" type="video/mp4">
+              </video>
+              <div class="bal-beforePosition videoBeforeLabel">GS-LPM</div>
+            </div>
+          </div>
+
+          <div class="bal-handle">
+            <span class="handle-left-arrow"></span>
+            <span class="handle-right-arrow"></span>
+          </div>
+
+        </div>
+        <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare1')">
+          Play / Pause
+        </button>
+</div>
+</div>
+
+
+
+
+
+
+        <br><br><br>
+        <h2 class="title is-5">Scene 2</h2>
+<div class="video-grid">
+<div class="video-cell">
+      <div id="videoCompare10" class="bal-container-small video-compare-container">
+
+        <!-- Right/full video -->
+        <div class="bal-after">
+          <video muted loop playsinline>
+            <source src="static/videos/comp_video_146_ours.mp4" type="video/mp4">
+          </video>
+          <div class="bal-afterPosition videoAfterLabel">Ours</div>
+        </div>
+
+        <!-- Left/clipped video -->
+        <div class="bal-before">
+          <div class="bal-before-inset">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_146_3dgs.mp4" type="video/mp4">
+            </video>
+            <div class="bal-beforePosition videoBeforeLabel">3DGS</div>
+          </div>
+        </div>
+
+        <div class="bal-handle">
+          <span class="handle-left-arrow"></span>
+          <span class="handle-right-arrow"></span>
+        </div>
+
+      </div>
+      <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare10')">
+        Play / Pause
+      </button>
+</div>
+
+
+
+<div class="video-cell">
+      <div id="videoCompare9" class="bal-container-small video-compare-container">
+
+        <!-- Right/full video -->
+        <div class="bal-after">
+          <video muted loop playsinline>
+            <source src="static/videos/comp_video_146_ours.mp4" type="video/mp4">
+          </video>
+          <div class="bal-afterPosition videoAfterLabel">Ours</div>
+        </div>
+
+        <!-- Left/clipped video -->
+        <div class="bal-before">
+          <div class="bal-before-inset">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_146_scaffold_gsD.mp4" type="video/mp4">
+            </video>
+            <div class="bal-beforePosition videoBeforeLabel">Scaffold-GS*</div>
+          </div>
+        </div>
+
+        <div class="bal-handle">
+          <span class="handle-left-arrow"></span>
+          <span class="handle-right-arrow"></span>
+        </div>
+
+      </div>
+      <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare9')">
+        Play / Pause
+      </button>
+</div>
+
+
+
+<div class="video-cell">
+      <div id="videoCompare8" class="bal-container-small video-compare-container">
+
+        <!-- Right/full video -->
+        <div class="bal-after">
+          <video muted loop playsinline>
+            <source src="static/videos/comp_video_146_ours.mp4" type="video/mp4">
+          </video>
+          <div class="bal-afterPosition videoAfterLabel">Ours</div>
+        </div>
+
+        <!-- Left/clipped video -->
+        <div class="bal-before">
+          <div class="bal-before-inset">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_146_gaussianpro.mp4" type="video/mp4">
+            </video>
+            <div class="bal-beforePosition videoBeforeLabel">GaussianPro</div>
+          </div>
+        </div>
+
+        <div class="bal-handle">
+          <span class="handle-left-arrow"></span>
+          <span class="handle-right-arrow"></span>
+        </div>
+
+      </div>
+      <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare8')">
+        Play / Pause
+      </button>
+</div>
+
+
+
+<div class="video-cell">
+        <div id="videoCompare7" class="bal-container-small video-compare-container">
+
+          <!-- Right/full video -->
+          <div class="bal-after">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_146_ours.mp4" type="video/mp4">
+            </video>
+            <div class="bal-afterPosition videoAfterLabel">Ours</div>
+          </div>
+
+          <!-- Left/clipped video -->
+          <div class="bal-before">
+            <div class="bal-before-inset">
+              <video muted loop playsinline>
+                <source src="static/videos/comp_video_146_pixelgs.mp4" type="video/mp4">
+              </video>
+              <div class="bal-beforePosition videoBeforeLabel">Pixel-GS</div>
+            </div>
+          </div>
+
+          <div class="bal-handle">
+            <span class="handle-left-arrow"></span>
+            <span class="handle-right-arrow"></span>
+          </div>
+
+        </div>
+        <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare7')">
+          Play / Pause
+        </button>
+</div>
+
+
+
+<div class="video-cell">
+        <div id="videoCompare6" class="bal-container-small video-compare-container">
+
+          <!-- Right/full video -->
+          <div class="bal-after">
+            <video muted loop playsinline>
+              <source src="static/videos/comp_video_146_ours.mp4" type="video/mp4">
+            </video>
+            <div class="bal-afterPosition videoAfterLabel">Ours</div>
+          </div>
+
+          <!-- Left/clipped video -->
+          <div class="bal-before">
+            <div class="bal-before-inset">
+              <video muted loop playsinline>
+                <source src="static/videos/comp_video_146_gs-lpm.mp4" type="video/mp4">
+              </video>
+              <div class="bal-beforePosition videoBeforeLabel">GS-LPM</div>
+            </div>
+          </div>
+
+          <div class="bal-handle">
+            <span class="handle-left-arrow"></span>
+            <span class="handle-right-arrow"></span>
+          </div>
+
+        </div>
+        <button class="video-toggle-btn" onclick="toggleCompareVideo('videoCompare6')">
+          Play / Pause
+        </button>
+</div>
+</div>
+
+
+
+
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Video Comparisons with Previous Methods. -->
+
+
+
+
+
+<!-- View Extrapolation Comparison. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom: 0;">
+      <div class="column is-full">
+        <h2 class="title is-3" style="font-weight: bold; margin-bottom: 20px;">Extrapolated View Comparison</h2>
+        <div class="content has-text-justified">
+          <p>
+            Qualitative comparison under increasing viewpoint extrapolation. Rendering results are shown for
+            the original test view and for mild, moderate, and strong lateral camera extrapolation.
+          </p>
+          <br>
+
+          <div class="content has-text-centered">
+            <h2 class="title is-5">Scene 1</h2>
+            <img src="./static/images/web_extrapolation1.jpg"
+                 style="width: 100%; max-width: 100%; height: auto; border-radius: 16px; margin-bottom: -10px;"
+                 alt=""/>
+          </div>
+          <p>
+            As the camera moves farther from the training trajectory, the baseline
+            methods increasingly produce blurred, duplicated, curved, or discontinuous lane markings and road
+            boundaries. Our method preserves a more continuous lane boundary and maintains comparatively stable
+            road structure in the rendered images under mild and moderate extrapolation, while showing fewer distortions under strong
+            extrapolation. Nevertheless, all methods degrade under large viewpoint shifts because the extrapolated
+            regions are only weakly constrained by the monocular training views.
+            Please zoom in on the figure for a clearer visualization of the results.
+          </p>
+          <br><br>
+
+          <div class="content has-text-centered">
+            <h2 class="title is-5">Scene 2</h2>
+            <img src="./static/images/web_extrapolation2.jpg"
+                 style="width: 100%; max-width: 100%; height: auto; border-radius: 16px; margin-bottom: -10px;"
+                 alt=""/>
+          </div>
+          <p>
+            The dashed boxes indicate selected sidewalk and road-boundary regions, and the corresponding enlarged
+            views highlight local geometric distortions. As the camera moves farther from the observed trajectory,
+            the baseline methods increasingly produce blurred or irregular curb and sidewalk structures.
+            Our method preserves more continuous road boundaries and more coherent sidewalk geometry under mild and
+            moderate extrapolation, while showing comparatively fewer distortions under strong extrapolation.
+            However, all methods degrade under large viewpoint shifts because these regions are weakly constrained
+            by the monocular training trajectory.
+            Please zoom in on the figure for a clearer visualization of the results.
+          </p>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ View Extrapolation Comparison. -->
+
+
+
+
+
+<!-- Extrapolated-View Video Comparisons. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom: 20px;">
+      <div class="column is-full">
+        <h2 class="title is-3" style="font-weight: bold; margin-bottom: 20px;">Extrapolated-View Video Comparisons</h2>
+        <div id="results-carousel" class="carousel results-carousel">
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="static/videos/extrapolation_lateral_036.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="static/videos/extrapolation_lateral_126.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="static/videos/extrapolation_lateral_524.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="static/videos/extrapolation_lateral_780.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="static/videos/extrapolation_lateral_069.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            These videos show continuous lateral camera movement from the center of the road toward the roadside,
+            enabling direct comparison of how each method degrades as the viewpoint moves farther from the observed
+            camera trajectory. Our method maintains more stable road geometry, lane markings, and scene structure
+            over a wider range of viewpoints, while the baselines exhibit earlier blurring, duplication, and geometric
+            distortion.
+          </p>
+        </div>
+
+        <br>
+        <div id="results-carousel" class="carousel results-carousel">
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline onloadedmetadata="this.playbackRate = 0.75;">
+                <source src="./static/videos/extrapolation_traj_036.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline onloadedmetadata="this.playbackRate = 0.75;">
+                <source src="./static/videos/extrapolation_traj_069.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline onloadedmetadata="this.playbackRate = 0.75;">
+                <source src="./static/videos/extrapolation_traj_362.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline onloadedmetadata="this.playbackRate = 0.75;">
+                <source src="./static/videos/extrapolation_traj_780.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline onloadedmetadata="this.playbackRate = 0.75;">
+                <source src="./static/videos/extrapolation_traj_scene_078.mp4" type="video/mp4">
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <div class="content has-text-justified">
+          <p>
+            These videos show renderings along a forward-moving camera trajectory from extrapolated viewpoints.
+            Our method better preserves fine road structures, lane continuity, and geometric consistency while
+            producing sharper and more stable renderings across viewpoints.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Extrapolated-View Video Comparisons. -->
+
+
+
+
+
+<!-- Initial Point Distribution. -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered" style="margin-bottom: 20px;">
+      <div class="column is-full">
+        <h2 class="title is-3" style="font-weight: bold; margin-bottom: 20px;">Initial Point Distribution</h2>
+
+        <div id="results-carousel" class="carousel results-carousel">
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="./static/videos/init_019.mp4" type="video/mp4">
+              </video>
+
+              <div class="video-label label-left">Scene</div>
+              <div class="video-label label-center">SfM Initialization</div>
+              <div class="video-label label-right">Our Initialization</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="./static/videos/init_081.mp4" type="video/mp4">
+              </video>
+
+              <div class="video-label label-left">Scene</div>
+              <div class="video-label label-center">SfM Initialization</div>
+              <div class="video-label label-right">Our Initialization</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="./static/videos/init_362.mp4" type="video/mp4">
+              </video>
+
+              <div class="video-label label-left">Scene</div>
+              <div class="video-label label-center">SfM Initialization</div>
+              <div class="video-label label-right">Our Initialization</div>
+            </div>
+          </div>
+
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="./static/videos/init_495.mp4" type="video/mp4">
+              </video>
+
+              <div class="video-label label-left">Scene</div>
+              <div class="video-label label-center">SfM Initialization</div>
+              <div class="video-label label-right">Our Initialization</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="./static/videos/init_scene_041.mp4" type="video/mp4">
+              </video>
+
+              <div class="video-label label-left">Scene</div>
+              <div class="video-label label-center">SfM Initialization</div>
+              <div class="video-label label-right">Our Initialization</div>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="video-label-wrapper">
+              <video poster="" autoplay controls muted loop playsinline>
+                <source src="./static/videos/init_scene_078.mp4" type="video/mp4">
+              </video>
+
+              <div class="video-label label-left">Scene</div>
+              <div class="video-label label-center">SfM Initialization</div>
+              <div class="video-label label-right">Our Initialization</div>
+            </div>
+          </div>
+        </div>
+        <br>
+
+        <div class="content has-text-justified">
+          <p>
+            Initial anchor distribution for various scenes. Compared with sparse SfM initialization, our method
+            produces a denser and more spatially balanced anchor distribution, improving coverage of textureless
+            road surfaces and fine, high-frequency structures.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+<!--/ Initial Point Distribution. -->
+
+
+
+
+
+<!-- Citation. -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <p>If you find this work useful in your research, please consider citing:</p>
+    <div style="position: relative;">
+      <pre class="bibtex"><code>@article{seker2027freqgs,
+  title     = {FreqGS: Frequency-Guided Gaussian Splatting for High-Fidelity Novel View Synthesis from Monocular Street Scenes},
+  author    = {Seker, Ahmet Cagatay and Ahn, Sang Chul},
+  journal   = {},
+  volume    = {},
+  pages     = {},
+  year      = {},
+  publisher = {}
+}</code></pre>
+      <button class="copy-btn" onclick="copyBibTeX()" id="copyButton">
+        <svg id="copyIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+
+        <svg id="checkIcon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+          viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          style="display:none;">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+
+        <span id="copyText">Copy</span>
+        <span id="copiedText" style="display:none;">Copied</span>
+      </button>
+    </div>
+  </div>
+</section>
+<!--/ Citation. -->
+
+
+
+
+
+<!-- Footer. -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+                                                href="https://creativecommons.org/licenses/by-sa/4.0/">Creative
+            Commons Attribution-ShareAlike 4.0 International License</a> and borrowed from the
+            <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+<!--/ Footer. -->
+
+
+
+
+
+</body>
+</html>
